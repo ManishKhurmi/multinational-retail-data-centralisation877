@@ -5,5 +5,8 @@
 __pycache__/
 *.py[cod]
 
+#Ignore VScode files
+.vscode/
+
 # Ignore the AWS database credentials 
 db_creds.yaml
