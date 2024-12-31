@@ -1,6 +1,6 @@
 import yaml 
 import sqlalchemy
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text  
 import pandas as pd
 
 # Step 2:
@@ -9,7 +9,7 @@ import pandas as pd
 
 class DatabaseConnector:
     ''' connects with the database to upload the data'''
-    # step 2 
+    # task 3 step 2 
     @staticmethod
     def read_db_creds(file_path):
         """Reads the database credentials from a YAML file and returns them as a dictionary."""
@@ -20,7 +20,7 @@ class DatabaseConnector:
         except Exception as e:
             print("Error reading the credentials file:", e)
             return None
-        
+    # task 3 step 3     
     @staticmethod
     def init_db_engine(creds):
         """Initializes and returns an SQLAlchemy database engine using credentials from the YAML file."""
@@ -34,17 +34,63 @@ class DatabaseConnector:
         else:
             print("Failed to initialize database engine due to missing or invalid credentials.")
             return None
-
+    @staticmethod
+    def list_db_tables(engine):
+        '''lists all tables in the database'''
+        inspector = inspect(engine)
+        return print(inspector.get_table_names())
 
 # Example usage
 db_connect = DatabaseConnector()
 creds = db_connect.read_db_creds('db_creds.yaml')
 print("Credentials: \n")
 print(creds)  # This should print out the dictionary of credentials
+
 engine = db_connect.init_db_engine(creds)
 print('Engine: \n')
 print(engine)
 
+db_connect.list_db_tables(engine)
+
+
+# Data extraction
+with engine.connect() as connection:
+    result = connection.execute(text("SELECT * FROM legacy_users"))
+    df = pd.DataFrame(result)
+    print(df.head())
+    
+    # for row in result:
+    #     print(row)
+
+
+
+
+
+# Task 3 step 4 
+# Using the engine from init_db_engine create a method list_db_tables to list all the tables in the database so you know which tables you can extract data from.
+# Develop a method inside your DataExtractor class to read the data from the RDS database.
+
+# from sqlalchemy import inspect 
+# inspector = inspect(engine)
+# print('/n Table Names:')
+# print(inspector.get_table_names())
+
+
+# def list_db_tables(engine):
+#     '''lists all tables in the database'''
+#     inspector = inspect(engine)
+#     return print(inspector.get_table_names())
+
+# # Test 
+# print('/nTesting')
+# list_db_tables(engine)
+
+# Test Class
+
+
+
+
+# Scratch code 
 # engine.execution_options(isolation_level='AUTOCOMMIT').connect()
 # engine.connect()
 
