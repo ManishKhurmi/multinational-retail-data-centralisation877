@@ -1,3 +1,4 @@
+# %%
 import yaml 
 import sqlalchemy
 from sqlalchemy import create_engine, inspect, text  
@@ -20,6 +21,12 @@ class DatabaseConnector:
         except Exception as e:
             print("Error reading the credentials file:", e)
             return None
+        
+    @staticmethod
+    def local_init_engine(creds):
+        """Initializes the SQLAlchemy engine using provided database credentials."""
+        return create_engine(f"{creds['DATABASE_TYPE']}+{creds['DBAPI']}://{creds['USER']}:{creds['PASSWORD']}@{creds['HOST']}:{creds['PORT']}/{creds['DATABASE']}")
+        
     # task 3 step 3     
     @staticmethod
     def init_db_engine(creds):
@@ -34,36 +41,75 @@ class DatabaseConnector:
         else:
             print("Failed to initialize database engine due to missing or invalid credentials.")
             return None
+        
     @staticmethod
     def list_db_tables(engine):
         '''lists all tables in the database'''
         inspector = inspect(engine)
         return print(inspector.get_table_names())
-
-# Example usage
-db_connect = DatabaseConnector()
-creds = db_connect.read_db_creds('db_creds.yaml')
-print("Credentials: \n")
-print(creds)  # This should print out the dictionary of credentials
-
-engine = db_connect.init_db_engine(creds)
-print('Engine: \n')
-print(engine)
-
-db_connect.list_db_tables(engine)
-
-
-# Data extraction
-with engine.connect() as connection:
-    result = connection.execute(text("SELECT * FROM legacy_users"))
-    df = pd.DataFrame(result)
-    print(df.head())
     
-    # for row in result:
-    #     print(row)
+    # @staticmethod
+    # def upload_to_db(df, table_name):
+
+# ###########################################################################################
+# # %% 
+# # Example usage
+# # connect to Cloud AWS database 
+# db_connect = DatabaseConnector()
+
+# # read credentials from the yaml file
+# creds = db_connect.read_db_creds('db_creds.yaml')
+# print("Credentials: \n")
+# print(creds)  # This should print out the dictionary of credentials
+
+# # creat an engine to connect to the db
+# engine = db_connect.init_db_engine(creds)
+# print('Engine: \n')
+# print(engine)
+
+# # List the tables in the database 
+# db_connect.list_db_tables(engine)
+
+# # %% 
+# # connecting to the local Postgres data
+# local_db_connect = DatabaseConnector()
+
+# # read credentials from the yaml file
+# creds = local_db_connect.read_db_creds('local_db_creds.yaml')
+# print("Credentials: \n")
+# print(creds)  # This should print out the dictionary of credentials
+
+# # create an engine to connect to the local postgres db
+# engine = local_db_connect.local_init_engine(creds)
+# print('Engine: \n')
+# print(engine)
+
+# # list tables in local db 
+# local_db_connect.list_db_tables(engine)
+###########################################################################################
 
 
+# %%
+# query = text(f"CREATE TABLE dim_users")
+# with engine.connect() as connection:
+#     connection.execute(query)
 
+# db_connect.list_db_tables(engine)
+
+# Manish: Task 3, the number of rows to be cleaned are too less and need to come back steps 7 & 8 
+# %%
+# test_data = {
+#     'user_id': [1, 2, 3],
+#     'user_name': ['Alice', 'Bob', 'Charlie'],
+# }
+# test_df = pd.DataFrame(test_data)
+
+# # uppload a test df 
+# test_df.to_sql('test_table', con=engine, if_exists='fail', index=False)
+
+# # Verify if the table was created
+# inspector = inspect(engine)
+# print('Tables in the DB:', inspector.get_table_names())
 
 
 # Task 3 step 4 
@@ -87,7 +133,17 @@ with engine.connect() as connection:
 
 # Test Class
 
+# @staticmethod
+# def read_rds_table(engine, table_name = ['legacy_store_details', 'dim_card_details', 'legacy_users', 'orders_table']):
+#     query = text(f"SELECT * FROM {table_name}")
+#     with engine.connect() as connection:
+#         result = connection.execute(query)
+#         # convert the result into a pandas df 
+#         df = pd.DataFrame(result)
+#         # print(f"(\nFirst 5 rows df: \n{df.head()})")
+#         return df 
 
+# def upload_to_db(engine):
 
 
 # Scratch code 
@@ -171,3 +227,5 @@ with engine.connect() as connection:
 
 
 
+
+# %%
