@@ -32,6 +32,11 @@ extract = DataExtractor()
 df = extract.read_rds_table(engine, table_name='legacy_users')
 print(df.head())
 
+(df == 'NULL').sum()
+df.to_csv('test')
+test_df = pd.read_csv('test')
+print((test_df == 'NULL').sum())
+
 
 print('#' * 10)
 print('#' * 10)
