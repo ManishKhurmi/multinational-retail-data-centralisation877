@@ -4,9 +4,6 @@ import sqlalchemy
 from sqlalchemy import create_engine, inspect, text  
 import pandas as pd
 
-# Step 2:
-# Create a method read_db_creds this will read the credentials yaml file and return a dictionary of the credentials.
-# You will need to pip install PyYAML and import yaml to do this.
 
 class DatabaseConnector:
     ''' connects with the database to upload the data'''
@@ -48,45 +45,65 @@ class DatabaseConnector:
         inspector = inspect(engine)
         return print(inspector.get_table_names())
     
-    # @staticmethod
-    # def upload_to_db(df, table_name):
+    @staticmethod
+    def upload_to_db(df, table_name: str, engine):
+        df.to_sql(table_name, con=engine, if_exists='replace', index=False)
+    
 
 # ###########################################################################################
-# # %% 
-# # Example usage
-# # connect to Cloud AWS database 
-# db_connect = DatabaseConnector()
 
-# # read credentials from the yaml file
-# creds = db_connect.read_db_creds('db_creds.yaml')
-# print("Credentials: \n")
-# print(creds)  # This should print out the dictionary of credentials
+if __name__ == '__main__':
 
-# # creat an engine to connect to the db
-# engine = db_connect.init_db_engine(creds)
-# print('Engine: \n')
-# print(engine)
+    print('Step 1: Initialise connection to AWS RDS DataBase \n')
+    aws_db_connect = DatabaseConnector()
 
-# # List the tables in the database 
-# db_connect.list_db_tables(engine)
+    print('Step 2: Read Credentials from YAML file \n')
+    aws_creds = aws_db_connect.read_db_creds('db_creds.yaml')
+    print("Credentials: \n")
+    print(aws_creds)  # This should print out the dictionary of credentials
 
-# # %% 
-# # connecting to the local Postgres data
-# local_db_connect = DatabaseConnector()
+    print('Step 3: Create Engine \n')
+    aws_engine = aws_db_connect.init_db_engine(aws_creds)
+    print('Engine: \n')
+    print(aws_engine)
 
-# # read credentials from the yaml file
-# creds = local_db_connect.read_db_creds('local_db_creds.yaml')
-# print("Credentials: \n")
-# print(creds)  # This should print out the dictionary of credentials
+    print('Step 4: List Tables in AWS RDS Data Base \n')
+    aws_db_connect.list_db_tables(aws_engine)
+    print('\n END \n')
+    print('#'*100)
 
-# # create an engine to connect to the local postgres db
-# engine = local_db_connect.local_init_engine(creds)
-# print('Engine: \n')
-# print(engine)
+    #### Local Postgres DB ####
 
-# # list tables in local db 
-# local_db_connect.list_db_tables(engine)
+    print('Step 1: Initialise connection to Local DB \n')
+    local_db_connect = DatabaseConnector()
+
+    print('Step 2: Read Local DB credentials \n')
+    local_creds = local_db_connect.read_db_creds('local_db_creds.yaml')
+    print("Credentials: \n")
+    print(local_creds)  # This should print out the dictionary of credentials
+
+    print('Step 3: Create Engine \n')
+    local_engine = local_db_connect.local_init_engine(local_creds)
+    print('Engine: \n')
+    print(local_engine)
+
+    print('Step 4: List Tables in Local DB \n')
+    local_db_connect.list_db_tables(local_engine)
+    print('END')
+
+    #### Upload DF to Local DB####
+    print('Upload DF to Local DB \n')
+    df_legacy_users = pd.read_csv('legacy_users.csv')
+    df_card_details = pd.read_csv('card_details.csv')
+    local_db_connect.upload_to_db(df_legacy_users, table_name='dim_users', engine=local_engine)
+    local_db_connect.upload_to_db(df_card_details, table_name='dim_card_details', engine=local_engine)
+    
+    print('List of Tables in Local DB: \n') 
+    local_db_connect.list_db_tables(local_engine)
+
 ###########################################################################################
+
+
 
 
 # %%
@@ -97,7 +114,7 @@ class DatabaseConnector:
 # db_connect.list_db_tables(engine)
 
 # Manish: Task 3, the number of rows to be cleaned are too less and need to come back steps 7 & 8 
-# %%
+# %% Testing upload_to_db
 # test_data = {
 #     'user_id': [1, 2, 3],
 #     'user_name': ['Alice', 'Bob', 'Charlie'],
