@@ -1,0 +1,7 @@
+DATABASE_TYPE : postgresql
+DBAPI : psycopg2
+HOST : localhost
+USER : postgres
+PASSWORD : ginger
+DATABASE : sales_data_raw
+PORT : 5432

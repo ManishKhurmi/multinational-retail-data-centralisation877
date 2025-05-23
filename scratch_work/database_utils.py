@@ -54,23 +54,24 @@ class DatabaseConnector:
 
 if __name__ == '__main__':
 
-    print('Step 1: Initialise connection to AWS RDS DataBase \n')
-    aws_db_connect = DatabaseConnector()
+    ### no longer needed as we are only using the local DB ###
+    # print('Step 1: Initialise connection to AWS RDS DataBase \n')
+    # aws_db_connect = DatabaseConnector()
 
-    print('Step 2: Read Credentials from YAML file \n')
-    aws_creds = aws_db_connect.read_db_creds('db_creds.yaml')
-    print("Credentials: \n")
-    print(aws_creds)  # This should print out the dictionary of credentials
+    # print('Step 2: Read Credentials from YAML file \n')
+    # aws_creds = aws_db_connect.read_db_creds('db_creds.yaml')
+    # print("Credentials: \n")
+    # print(aws_creds)  # This should print out the dictionary of credentials
 
-    print('Step 3: Create Engine \n')
-    aws_engine = aws_db_connect.init_db_engine(aws_creds)
-    print('Engine: \n')
-    print(aws_engine)
+    # print('Step 3: Create Engine \n')
+    # aws_engine = aws_db_connect.init_db_engine(aws_creds)
+    # print('Engine: \n')
+    # print(aws_engine)
 
-    print('Step 4: List Tables in AWS RDS Data Base \n')
-    aws_db_connect.list_db_tables(aws_engine)
-    print('\n END \n')
-    print('#'*100)
+    # print('Step 4: List Tables in AWS RDS Data Base \n')
+    # aws_db_connect.list_db_tables(aws_engine)
+    # print('\n END \n')
+    # print('#'*100)
 
     #### Local Postgres DB ####
 
@@ -78,6 +79,7 @@ if __name__ == '__main__':
     local_db_connect = DatabaseConnector()
 
     print('Step 2: Read Local DB credentials \n')
+    # local_creds = local_db_connect.read_db_creds('local_db_creds.yaml')
     local_creds = local_db_connect.read_db_creds('local_db_creds.yaml')
     print("Credentials: \n")
     print(local_creds)  # This should print out the dictionary of credentials
@@ -91,15 +93,15 @@ if __name__ == '__main__':
     local_db_connect.list_db_tables(local_engine)
     print('END')
 
-    #### Upload DF to Local DB####
-    print('Upload DF to Local DB \n')
-    df_legacy_users = pd.read_csv('legacy_users.csv')
-    df_card_details = pd.read_csv('card_details.csv')
-    local_db_connect.upload_to_db(df_legacy_users, table_name='dim_users', engine=local_engine)
-    local_db_connect.upload_to_db(df_card_details, table_name='dim_card_details', engine=local_engine)
+    # #### Upload DF to Local DB####
+    # print('Upload DF to Local DB \n')
+    # df_legacy_users = pd.read_csv('legacy_users.csv')
+    # df_card_details = pd.read_csv('card_details.csv')
+    # local_db_connect.upload_to_db(df_legacy_users, table_name='dim_users', engine=local_engine)
+    # local_db_connect.upload_to_db(df_card_details, table_name='dim_card_details', engine=local_engine)
     
-    print('List of Tables in Local DB: \n') 
-    local_db_connect.list_db_tables(local_engine)
+    # print('List of Tables in Local DB: \n') 
+    # local_db_connect.list_db_tables(local_engine)
 
 ###########################################################################################
 

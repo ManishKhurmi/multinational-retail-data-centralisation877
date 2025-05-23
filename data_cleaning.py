@@ -3,7 +3,7 @@ import yaml
 import sqlalchemy
 from sqlalchemy import create_engine, inspect, text  
 import pandas as pd
-from database_utils import DatabaseConnector
+from scratch_work.database_utils import DatabaseConnector
 from data_extraction import DataExtractor
 import numpy as np 
 
@@ -163,3 +163,9 @@ if __name__ == "__main__":
     cleaning = DataCleaning(df_card_details)
     df_card_data_cleaned = cleaning.clean_card_data()
     
+
+#%% 
+import pandas as pd
+df = pd.read_csv('legacy_users.csv')
+df.shape
+# %%

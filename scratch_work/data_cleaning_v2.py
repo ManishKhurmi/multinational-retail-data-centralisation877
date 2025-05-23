@@ -4,7 +4,7 @@ import yaml
 import sqlalchemy
 from sqlalchemy import create_engine, inspect, text  
 import pandas as pd
-from database_utils import DatabaseConnector
+from scratch_work.database_utils import DatabaseConnector
 from data_extraction import DataExtractor
 import numpy as np 
 

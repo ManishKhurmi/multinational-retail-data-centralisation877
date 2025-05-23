@@ -265,6 +265,8 @@ class DataExtractor:
             else:
                 print(f"Skipping store {store_number}: Invalid response format")
         return pd.DataFrame(all_stores)
+    
+
 
 # Constants
 API_KEY = 'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'
